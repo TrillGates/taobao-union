@@ -23,7 +23,35 @@
     </div>
     <nuxt/>
     <!--底部-->
-    <div>底部</div>
+    <div id="footer">
+      <div class="center-box">
+        <div class="footer-link">
+          <ul class="clear-fix">
+            <li>
+              联系我们
+            </li>
+            <li>
+              人才招聘
+            </li>
+            <li>
+              广告投放
+            </li>
+            <li>
+              网店加盟
+            </li>
+            <li>
+              常见问题
+            </li>
+            <li>
+              友情连接
+            </li>
+          </ul>
+        </div>
+        <div class="size-info">
+          <p>&COPY;2019 taobaounion.cn 粤IPC备 1209832号-11 code by TrillGates</p>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -42,6 +70,40 @@
   *, *:before, *:after {
     box-sizing: border-box;
     margin: 0;
+  }
+
+  .size-info {
+    color: #fff;
+    line-height: 30px;
+    padding-bottom: 20px;
+    text-align: center;
+  }
+
+  .footer-link ul {
+    display: inline-block;
+  }
+
+  .footer-link {
+    padding-top: 20px;
+    text-align: center;
+  }
+
+  .footer-link li {
+    float: left;
+    color: #fff;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
+    line-height: 30px;
+  }
+
+  .footer-link ul {
+    list-style: none;
+  }
+
+  #footer {
+    background: #c9302c;
   }
 
   .menu-active {

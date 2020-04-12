@@ -13,8 +13,9 @@
     "precommit": "npm run lint"
   },
   "dependencies": {
-    "nuxt": "^2.0.0",
-    "element-ui": "^2.0.11"
+    "axios": "^0.19.2",
+    "element-ui": "^2.0.11",
+    "nuxt": "^2.0.0"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.1",
