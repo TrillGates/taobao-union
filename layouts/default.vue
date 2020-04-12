@@ -14,7 +14,7 @@
           </ul>
         </div>
         <div class="header-search-box float-left">
-          <el-input v-model="input" placeholder="复制（淘宝的标题或者关键字）找优惠券!" size="small"></el-input>
+          <el-input placeholder="复制（淘宝的标题或者关键字）找优惠券!" size="small"></el-input>
         </div>
         <div class="header-search-btn float-left">
           <el-button type="danger" size="small">搜索</el-button>

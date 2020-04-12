@@ -33,10 +33,22 @@
 
 <script>
   import AppLogo from '~/components/AppLogo.vue'
+  import api from '../utils/api';
 
   export default {
     components: {
       AppLogo
+    },
+    asyncData() {
+      console.log("test load data....");
+      // api.getCategories().then(result => {
+      //   console.log(result.code);
+      //   console.log(result.message);
+      //   console.log(result.data);
+      // });
+      api.getCategoryContent('9660', 1).then(result => {
+        console.log(result.data);
+      });
     }
   }
 </script>
