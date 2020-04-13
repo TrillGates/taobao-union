@@ -18,12 +18,14 @@
             <div class="recommend-item-cover">
               <img :src="item.pict_url">
             </div>
-            <div class="recommend-item-title" v-text="item.title">
-
+            <div class="recommend-item-title">
+              <a v-text="item.title" :href="item.coupon_click_url!==null?item.coupon_click_url:item.click_url"
+                 target="_blank"></a>
             </div>
             <div class="recommend-item-info">
-              <el-button type="danger">领券购买</el-button>
-              <span>原价：34.00</span>
+              <a v-if="item.coupon_click_url!==null" class="buy-btn" :href="item.coupon_click_url"
+                 target="_blank">领券购买</a>
+              <span class="recommend-prise" v-text="item.coupon_click_url===null?'晚了，无优惠券':'原价：'+item.zk_final_price">原价：34.00</span>
             </div>
           </div>
         </div>
@@ -47,7 +49,7 @@
         //请求分类成功
         //去获取分类商品列表
         let contentResult = await api.getRecommendContent(categoryResult.data[0].favorites_id);
-        console.log(contentResult.data);
+        //console.log(contentResult.data.tbk_uatm_favorites_item_get_response.results.uatm_tbk_item);
         if (contentResult.code === 10000) {
           return {
             categories: categoryResult.data,
@@ -63,12 +65,63 @@
 
 <style>
 
+
+  .buy-btn {
+    text-decoration: none;
+    display: inline-block;
+    line-height: 1;
+    white-space: nowrap;
+    cursor: pointer;
+    background: #FFF;
+    border: 1px solid #DCDFE6;
+    color: #606266;
+    -webkit-appearance: none;
+    text-align: center;
+    box-sizing: border-box;
+    outline: 0;
+    margin: 0;
+    transition: .1s;
+    font-weight: 500;
+    padding: 12px 20px;
+    font-size: 14px;
+    border-radius: 4px;
+    color: #FFF;
+    background-color: #F56C6C;
+    border-color: #F56C6C;
+  }
+
+  .recommend-prise {
+    margin-left: 10px;
+    font-weight: 600;
+    color: #ebb563;
+  }
+
+  .recommend-item-info {
+    margin-top: 10px;
+  }
+
+  .recommend-item-title a {
+    margin-top: 10px;
+    margin-top: 10px;
+    text-decoration: none;
+    color: #47494e;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+  }
+
   .recommend-content-item {
-    width: 285px;
+    width: 265px;
+    box-shadow: 0 5px 10px #d4d4d4;
+    background: #fff;
+    padding: 10px 10px;
+    margin: 10px;
     height: 370px;
   }
 
   .recommend-item-cover img {
+    border-radius: 5px;
     width: 243px;
     height: 243px;
   }
