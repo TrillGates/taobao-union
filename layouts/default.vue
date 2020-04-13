@@ -167,6 +167,10 @@
     list-style: none;
   }
 
+  .header-menu {
+    margin-left: 30px;
+  }
+
   .header-logo {
     font-size: 24px;
     line-height: 70px;

@@ -4,7 +4,7 @@
       <div class="recommend-category-box">
         <ul class="clear-fix">
           <li :class="index!==0?'float-left':'float-left recommend-menu-active'" v-for="(item,index) in categories"
-              :key="index" v-text="item.favorites_title">
+              :key="index" v-text="item.favorites_title" @click="loadContentByCategory(item)">
           </li>
         </ul>
       </div>
@@ -38,12 +38,15 @@
 </template>
 
 <script>
-  import AppLogo from '~/components/AppLogo.vue'
   import api from '../utils/api';
 
   export default {
-    components: {
-      AppLogo
+    methods: {
+      loadContentByCategory(item) {
+        console.log("loadContentByCategory...");
+        console.log(item.favorites_id);
+        console.log(item.favorites_title);
+      }
     },
     async asyncData() {
       console.log("test load data....");
@@ -87,6 +90,11 @@
 
   .recommend-content-title {
     text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .recommend-content-list-box {
+    box-shadow: 0 5px 10px #d4d4d4;
   }
 
   .recommend-coupon-info {
@@ -172,6 +180,10 @@
     margin-left: 20px;
     color: #8c8c8c;
     margin-right: 20px;
+  }
+
+  .recommend-category-box ul > li:hover {
+    color: #c9302c;
   }
 
   .recommend-category-box {
