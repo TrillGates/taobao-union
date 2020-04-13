@@ -10,7 +10,7 @@
       </div>
       <div class="recommend-content-list-box">
         <div class="recommend-content-title">
-          <span>上/班/族/早/餐</span>
+          <span v-html="currentCategory"></span>
         </div>
         <div class="recommend-content-list clear-fix">
           <div class="recommend-content-item float-left"
@@ -27,6 +27,9 @@
                  target="_blank">领券购买</a>
               <span class="recommend-prise" v-text="item.coupon_click_url===null?'晚了，无优惠券':'原价：'+item.zk_final_price">原价：34.00</span>
             </div>
+            <span class="recommend-coupon-info" v-if="item.coupon_info!==null" v-text="item.coupon_info">
+
+            </span>
           </div>
         </div>
       </div>
@@ -50,10 +53,12 @@
         //去获取分类商品列表
         let contentResult = await api.getRecommendContent(categoryResult.data[0].favorites_id);
         //console.log(contentResult.data.tbk_uatm_favorites_item_get_response.results.uatm_tbk_item);
+        let titleArray = categoryResult.data[0].favorites_title.split('');
         if (contentResult.code === 10000) {
           return {
             categories: categoryResult.data,
-            content: contentResult.data
+            content: contentResult.data,
+            currentCategory: titleArray.join("<em>/</em>")
           };
         }
       } else {
@@ -65,6 +70,35 @@
 
 <style>
 
+  .recommend-content-title span {
+    font-size: 20px;
+    font-weight: 600;
+    color: #4D555D;
+    font-style: normal;
+    margin: 0 3px;
+  }
+
+  .recommend-content-title em {
+    margin-left: 5px;
+    margin-right: 5px;
+    font-weight: 400;
+    font-size: 16px;
+  }
+
+  .recommend-content-title {
+    text-align: center;
+  }
+
+  .recommend-coupon-info {
+    position: absolute;
+    right: 12px;
+    top: 20px;
+    padding: 5px 10px;
+    border-bottom-left-radius: 5px;
+    border-top-left-radius: 5px;
+    background: #c9302c;
+    color: #fff;
+  }
 
   .buy-btn {
     text-decoration: none;
@@ -113,6 +147,7 @@
 
   .recommend-content-item {
     width: 265px;
+    position: relative;
     box-shadow: 0 5px 10px #d4d4d4;
     background: #fff;
     padding: 10px 10px;
