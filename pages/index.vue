@@ -8,6 +8,26 @@
           </li>
         </ul>
       </div>
+      <div class="recommend-content-list-box">
+        <div class="recommend-content-title">
+          <span>上/班/族/早/餐</span>
+        </div>
+        <div class="recommend-content-list clear-fix">
+          <div class="recommend-content-item float-left"
+               v-for="(item,index) in content.tbk_uatm_favorites_item_get_response.results.uatm_tbk_item" :key="index">
+            <div class="recommend-item-cover">
+              <img :src="item.pict_url">
+            </div>
+            <div class="recommend-item-title" v-text="item.title">
+
+            </div>
+            <div class="recommend-item-info">
+              <el-button type="danger">领券购买</el-button>
+              <span>原价：34.00</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 </template>
@@ -20,20 +40,38 @@
     components: {
       AppLogo
     },
-    asyncData() {
+    async asyncData() {
       console.log("test load data....");
-      return api.getRecommendCategories().then(result => {
-        if (result.code === 10000) {
-          return {categories: result.data};
-        } else {
-          //TODO:处理错误
+      let categoryResult = await api.getRecommendCategories();
+      if (categoryResult.code === 10000) {
+        //请求分类成功
+        //去获取分类商品列表
+        let contentResult = await api.getRecommendContent(categoryResult.data[0].favorites_id);
+        console.log(contentResult.data);
+        if (contentResult.code === 10000) {
+          return {
+            categories: categoryResult.data,
+            content: contentResult.data
+          };
         }
-      });
+      } else {
+        //TODO:请求分类失败
+      }
     }
   }
 </script>
 
 <style>
+
+  .recommend-content-item {
+    width: 285px;
+    height: 370px;
+  }
+
+  .recommend-item-cover img {
+    width: 243px;
+    height: 243px;
+  }
 
   .recommend-menu-active {
     border-bottom: #c9302c 2px solid;
