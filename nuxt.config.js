@@ -24,6 +24,26 @@ module.exports = {
       ssr: true
     },
   ],
+
+  modules: [
+    '@nuxtjs/proxy'
+  ],
+
+  axios: {
+    proxy: true,
+    prefix: '/union/',
+    credentials: true
+  },
+
+  proxy: {
+    '/union/': {
+      target: 'https://api.sunofbeach.net/shop/api/',
+      pathRewrite: {
+        changeOrigin: true,
+        '^/union/': ''
+      }
+    }
+  },
   /*
   ** Customize the progress bar color
   */

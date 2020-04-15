@@ -4,7 +4,7 @@
       <div class="recommend-category-box">
         <ul class="clear-fix">
           <li :class="index!==0?'float-left':'float-left recommend-menu-active'" v-for="(item,index) in categories"
-              :key="index" v-text="item.favorites_title" @click="loadContentByCategory(item)">
+              :key="index" v-text="item.favorites_title" @click="onCategoryItemClick(item)">
           </li>
         </ul>
       </div>
@@ -42,10 +42,23 @@
 
   export default {
     methods: {
-      loadContentByCategory(item) {
+      onCategoryItemClick(item) {
         console.log("loadContentByCategory...");
         console.log(item.favorites_id);
         console.log(item.favorites_title);
+        this.currentCategory = item.favorites_title.split('').join("<em>/</em>");
+        //加载对应的内容
+        this.loadContentByCategory(item.favorites_id);
+      },
+
+      loadContentByCategory(favoriteId) {
+        api.getRecommendContentByProxy(favoriteId).then(result => {
+          if (result.code === 10000) {
+            this.content.length = 0;
+            this.content = [];
+            this.content = result.data
+          }
+        });
       }
     },
     async asyncData() {
