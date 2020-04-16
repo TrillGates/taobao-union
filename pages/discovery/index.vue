@@ -10,7 +10,32 @@
         </ul>
       </div>
       <div class="discovery-center-part float-left">
-        这个中间部分
+        <div class="discovery-content-item clear-fix" v-for="(item,index) in contentList" :key="index">
+          <div class="item-left-cover float-left">
+            <el-image
+              style="width: 180px; height: 180px"
+              :src="item.pict_url"
+              :fit="fit"></el-image>
+          </div>
+          <div class="float-left item-right-info">
+            <div class="item-title">
+              <span v-text="item.title">
+
+              </span>
+            </div>
+            <div class="prise-info">
+              <span v-text="'原价:'+item.zk_final_price"></span>
+              <span>券后价:</span>
+              <span v-text="item.zk_final_price-item.coupon_amount"></span>
+            </div>
+            <div class="sell-info">
+              <span v-text="item.volume"></span>
+              <span>·</span>
+              <span>已购买</span>
+            </div>
+          </div>
+          <el-button type="danger" size="small">领券购买</el-button>
+        </div>
       </div>
       <div class="discovery-right-part float-left">
         这个右边部分
@@ -85,7 +110,6 @@
     margin-left: 10px;
     margin-right: 10px;
     background: antiquewhite;
-    height: 1000px;
   }
 
   .discovery-right-part {
