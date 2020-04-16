@@ -3,7 +3,8 @@
     <div class="discovery-content-box">
       <div class="discovery-left-part float-left">
         <ul>
-          <li v-for="(item,index) in categoriesList" :key="index">
+          <li :class="currentCategoryId===item.id?'discovery-category-active':''" v-for="(item,index) in categoriesList"
+              :key="index">
             <span v-text="item.title"></span>
           </li>
         </ul>
@@ -25,8 +26,18 @@
       let categoriesResult = await api.getCategories();
       console.log(categoriesResult);
       if (categoriesResult.code === api.SUCCESS_CODE) {
-        return {
-          categoriesList: categoriesResult.data
+        let categoriesList = categoriesResult.data;
+        //拿推荐里的内容
+        let recommendItem = categoriesList[0];
+        let currentCategoryId = recommendItem.id;
+        let contentResult = await api.getCategoryContent(currentCategoryId, 1);
+        if (contentResult.code === api.SUCCESS_CODE) {
+          //console.log(contentResult.data);
+          return {
+            currentCategoryId,
+            categoriesList,
+            contentList: contentResult.data,
+          }
         }
       }
     }
@@ -34,6 +45,10 @@
 </script>
 <style>
 
+  .discovery-category-active {
+    color: #fff;
+    background: #ff4500;
+  }
 
   .discovery-content-box {
     margin-top: 20px;
