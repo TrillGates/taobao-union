@@ -2,7 +2,10 @@ import request from './http';
 
 export const baseUrl = "https://api.sunofbeach.net/shop/api/";
 
+const SUCCESS_CODE = 10000;
+
 export default {
+  SUCCESS_CODE,
 
   getCategories() {
     return request.requestGet(baseUrl + "discovery/categories");

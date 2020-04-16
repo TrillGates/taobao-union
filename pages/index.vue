@@ -71,7 +71,7 @@
         this.content.tbk_uatm_favorites_item_get_response.results.uatm_tbk_item = [];
         api.getRecommendContentByProxy(favoriteId).then(result => {
           this.loading = false;
-          if (result.code === 10000) {
+          if (result.code === api.SUCCESS_CODE) {
             this.content = result.data
           } else {
             //
@@ -103,7 +103,7 @@
     async asyncData() {
       console.log("test load data....");
       let categoryResult = await api.getRecommendCategories();
-      if (categoryResult.code === 10000) {
+      if (categoryResult.code === api.SUCCESS_CODE) {
         //请求分类成功
         let currentId = categoryResult.data[0].favorites_id;
         //去获取分类商品列表
@@ -112,7 +112,7 @@
         let titleArray = categoryResult.data[0].favorites_title.split('');
         // let url = contentResult.data.tbk_uatm_favorites_item_get_response.results.uatm_tbk_item[0];
         // console.log(url);
-        if (contentResult.code === 10000) {
+        if (contentResult.code === api.SUCCESS_CODE) {
           return {
             categories: categoryResult.data,
             content: contentResult.data,
