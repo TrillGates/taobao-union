@@ -39,12 +39,30 @@
     margin-top: 20px;
   }
 
+
+  .discovery-left-part li:hover {
+    background: #ff4500;
+    color: #fff;
+  }
+
+  .discovery-left-part span {
+    line-height: 40px;
+  }
+
+  .discovery-left-part li {
+    width: 105px;
+    height: 40px;
+    cursor: pointer;
+    text-align: center;
+  }
+
   /*1140,分三份，左：120*/
   .discovery-left-part {
-    height: 300px;
     margin-right: 10px;
-    width: 110px;
-    background: #7f828b;
+    width: 105px;
+    margin-left: 5px;
+    background: #fff;
+    box-shadow: 0px 5px 10px #d4d4d4;
   }
 
   .discovery-center-part {
