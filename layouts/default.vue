@@ -132,6 +132,24 @@
     line-height: 70px;
   }
 
+
+  .back-top:hover {
+    color: #c9302c;
+    border: #c9302c 1px solid;
+  }
+
+  .back-top {
+    height: 30px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    width: 30px;
+    border-radius: 50%;
+    color: #8c8c8c;
+    line-height: 30px;
+    text-align: center;
+    border: #8c8c8c 1px solid;
+  }
+
   #header {
     box-shadow: 0px 5px 10px #d4d4d4;
     background: #fff;
@@ -140,6 +158,10 @@
 
   .float-left {
     float: left;
+  }
+
+  .float-right {
+    float: right;
   }
 
   .clear-fix {

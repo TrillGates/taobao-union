@@ -1,14 +1,21 @@
 <template>
   <section class="container">
     <div class="center-box">
-      <div class="recommend-category-box">
+      <div id="recommend-category-box">
         <ul class="clear-fix">
-          <li :class="index!==0?'float-left':'float-left recommend-menu-active'" v-for="(item,index) in categories"
+          <li :class="item.favorites_id!==currentFavoriteId?'float-left':'float-left recommend-menu-active'"
+              v-for="(item,index) in categories"
               :key="index" v-text="item.favorites_title" @click="onCategoryItemClick(item)">
+          </li>
+          <li class="float-right">
+            <a href="#top">
+              <span class="back-top el-icon-upload2"></span>
+            </a>
           </li>
         </ul>
       </div>
-      <div class="recommend-content-list-box">
+      <div id="recommend-content-list-box"
+           v-loading="loading">
         <div class="recommend-content-title">
           <span v-html="currentCategory"></span>
         </div>
@@ -41,40 +48,74 @@
   import api from '../utils/api';
 
   export default {
+    data() {
+      return {
+        loading: false
+      }
+    },
     methods: {
       onCategoryItemClick(item) {
+        document.documentElement.scrollTop = 0;
         console.log("loadContentByCategory...");
-        console.log(item.favorites_id);
-        console.log(item.favorites_title);
+        // console.log(item.favorites_id);
+        // console.log(item.favorites_title);
+        this.currentFavoriteId = item.favorites_id;
         this.currentCategory = item.favorites_title.split('').join("<em>/</em>");
         //加载对应的内容
         this.loadContentByCategory(item.favorites_id);
       },
 
       loadContentByCategory(favoriteId) {
+        this.loading = true;
+        this.content.tbk_uatm_favorites_item_get_response.results.uatm_tbk_item.length = 0;
+        this.content.tbk_uatm_favorites_item_get_response.results.uatm_tbk_item = [];
         api.getRecommendContentByProxy(favoriteId).then(result => {
+          this.loading = false;
           if (result.code === 10000) {
-            this.content.length = 0;
-            this.content = [];
             this.content = result.data
+          } else {
+            //
           }
         });
+      },
+      onScroll() {
+        let menuBox = document.getElementById('recommend-category-box');
+        if (menuBox) {
+          let dy = document.documentElement.scrollTop;
+          if (dy < 90) {
+            menuBox.style.top = (90 - dy) + 'px';
+          } else {
+            menuBox.style.top = '0px';
+          }
+
+        }
       }
+    },
+    mounted() {
+      this.onScroll();
+      console.log(document.documentElement.clientHeight);
+      let listBox = document.getElementById('recommend-content-list-box');
+      if (listBox) {
+        listBox.style.minHeight = document.documentElement.clientHeight + "px";
+      }
+      window.addEventListener("scroll", this.onScroll);
     },
     async asyncData() {
       console.log("test load data....");
       let categoryResult = await api.getRecommendCategories();
       if (categoryResult.code === 10000) {
         //请求分类成功
+        let currentId = categoryResult.data[0].favorites_id;
         //去获取分类商品列表
-        let contentResult = await api.getRecommendContent(categoryResult.data[0].favorites_id);
+        let contentResult = await api.getRecommendContent(currentId);
         //console.log(contentResult.data.tbk_uatm_favorites_item_get_response.results.uatm_tbk_item);
         let titleArray = categoryResult.data[0].favorites_title.split('');
         if (contentResult.code === 10000) {
           return {
             categories: categoryResult.data,
             content: contentResult.data,
-            currentCategory: titleArray.join("<em>/</em>")
+            currentCategory: titleArray.join("<em>/</em>"),
+            currentFavoriteId: currentId
           };
         }
       } else {
@@ -106,7 +147,8 @@
     margin-bottom: 30px;
   }
 
-  .recommend-content-list-box {
+  #recommend-content-list-box {
+    margin-top: 100px;
     box-shadow: 0 5px 10px #d4d4d4;
   }
 
@@ -187,7 +229,7 @@
     color: #c9302c !important;
   }
 
-  .recommend-category-box li {
+  #recommend-category-box li {
     font-size: 16px;
     cursor: pointer;
     margin-left: 20px;
@@ -195,20 +237,23 @@
     margin-right: 20px;
   }
 
-  .recommend-category-box ul > li:hover {
+  #recommend-category-box ul > li:hover {
     color: #c9302c;
   }
 
-  .recommend-category-box {
+  #recommend-category-box {
     height: 60px;
-    margin-top: 30px;
+    z-index: 1000;
+    top: 90px;
+    width: 1140px;
+    position: fixed;
     margin-bottom: 30px;
     background: #fff;
     line-height: 58px;
     box-shadow: 0 5px 10px #d4d4d4;
   }
 
-  .recommend-category-box ul {
+  #recommend-category-box ul {
     list-style: none;
   }
 </style>
