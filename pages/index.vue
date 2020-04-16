@@ -23,7 +23,7 @@
           <div class="recommend-content-item float-left"
                v-for="(item,index) in content.tbk_uatm_favorites_item_get_response.results.uatm_tbk_item" :key="index">
             <div class="recommend-item-cover">
-              <img :src="item.pict_url">
+              <img :src="item.pict_url+'_240x240xzq90.jpg_.webp'">
             </div>
             <div class="recommend-item-title">
               <a v-text="item.title" :href="item.coupon_click_url!==null?item.coupon_click_url:item.click_url"
@@ -110,6 +110,8 @@
         let contentResult = await api.getRecommendContent(currentId);
         //console.log(contentResult.data.tbk_uatm_favorites_item_get_response.results.uatm_tbk_item);
         let titleArray = categoryResult.data[0].favorites_title.split('');
+        // let url = contentResult.data.tbk_uatm_favorites_item_get_response.results.uatm_tbk_item[0];
+        // console.log(url);
         if (contentResult.code === 10000) {
           return {
             categories: categoryResult.data,

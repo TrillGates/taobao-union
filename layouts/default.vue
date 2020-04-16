@@ -9,7 +9,9 @@
         <div class="header-menu float-left">
           <ul>
             <li class="menu-active">券场</li>
-            <li>发现</li>
+            <a href="/discovery">
+              <li>发现</li>
+            </a>
             <li>特惠</li>
           </ul>
         </div>
