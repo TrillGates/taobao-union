@@ -40,7 +40,16 @@
         </div>
       </div>
       <div class="discovery-right-part float-left">
-        这个右边部分
+        <div class="discovery-right-loop">
+          <el-carousel height="150px">
+            <el-carousel-item v-for="(item,index) in loopData" :key="index">
+              <el-image
+                style="width: 275px; height: 150px"
+                :src="item.pict_url"
+                fit="cover"></el-image>
+            </el-carousel-item>
+          </el-carousel>
+        </div>
       </div>
     </div>
   </div>
@@ -63,12 +72,14 @@
         let recommendItem = categoriesList[0];
         let currentCategoryId = recommendItem.id;
         let contentResult = await api.getCategoryContent(currentCategoryId, 1);
+        let loopData = contentResult.data.slice(0, 5);
         if (contentResult.code === api.SUCCESS_CODE) {
           //console.log(contentResult.data);
           return {
             currentCategoryId,
             categoriesList,
             contentList: contentResult.data,
+            loopData,
           }
         }
       }
@@ -76,6 +87,12 @@
   }
 </script>
 <style>
+
+  .discovery-right-loop .el-carousel__button {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
 
 
   .original-prise {
@@ -189,10 +206,10 @@
   }
 
   .discovery-right-part {
-    width: 280px;
+    width: 270px;
+    margin-right: 5px;
+    box-shadow: 0px 5px 10px #d4d4d4;
     margin-left: 10px;
-    background: #89ffaa;
-    height: 500px;
   }
 
 </style>
