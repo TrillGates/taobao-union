@@ -167,6 +167,7 @@
       }
     },
     mounted() {
+      this.$store.commit('setCurrentActive', 'discovery');
       this.onScroll();
       let contentBox = document.getElementById('discovery-center-part');
       contentBox.style.minHeight = window.screen.height + 'px';

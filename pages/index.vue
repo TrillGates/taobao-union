@@ -92,6 +92,7 @@
       }
     },
     mounted() {
+      this.$store.commit('setCurrentActive', 'index');
       this.onScroll();
       console.log(document.documentElement.clientHeight);
       let listBox = document.getElementById('recommend-content-list-box');

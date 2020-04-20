@@ -8,11 +8,13 @@
         </div>
         <div class="header-menu float-left">
           <ul>
-            <li class="menu-active">券场</li>
-            <a href="/discovery">
-              <li>发现</li>
+            <a href="/">
+              <li :class="$store.state.currentActive==='index'?'menu-active':''">券场</li>
             </a>
-            <li>特惠</li>
+            <a href="/discovery">
+              <li :class="$store.state.currentActive==='discovery'?'menu-active':''">发现</li>
+            </a>
+            <li :class="$store.state.currentActive==='onSell'?'menu-active':''">特惠</li>
           </ul>
         </div>
         <div class="header-search-box float-left">
