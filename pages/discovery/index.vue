@@ -12,7 +12,7 @@
           </ul>
         </div>
       </div>
-      <div class="discovery-center-part float-left">
+      <div class="discovery-center-part float-left" id="discovery-center-part">
         <div class="discovery-content-item clear-fix" v-for="(item,index) in contentList" :key="index">
           <div class="item-left-cover float-left">
             <el-image
@@ -46,10 +46,13 @@
         <div id="discovery-right-loop">
           <el-carousel height="275px">
             <el-carousel-item v-for="(item,index) in loopData" :key="index">
-              <el-image
-                style="width: 275px; height: 275px"
-                :src="item.pict_url"
-                fit="cover"></el-image>
+              <a target="_blank" :href="item.coupon_click_url">
+                <el-image
+                  style="width: 275px; height: 275px"
+                  :src="item.pict_url"
+                  fit="cover">
+                </el-image>
+              </a>
             </el-carousel-item>
           </el-carousel>
         </div>
@@ -61,7 +64,32 @@
   import api from '../../utils/api';
 
   export default {
+    data() {
+      return {
+        isLoading: false,
+        currentPage: 1
+      }
+    },
     methods: {
+      //加载更多
+      loaderMore() {
+        this.currentPage++;
+        api.getCategoryContentByProxy(this.currentCategoryId, this.currentPage).then(result => {
+          console.log(result);
+          if (result.code === api.SUCCESS_CODE) {
+            console.log("size == > " + result.data.length);
+            this.contentList = this.contentList.concat(result.data);
+            //如果说没有更多
+            if (result.data.length === 52) {
+              //不用改值
+              this.isLoading = false;
+            }
+          } else {
+            this.isLoading = false;
+            this.currentPage--;
+          }
+        });
+      },
       to2Bit(num) {
         return num.toFixed(2);
       },
@@ -70,10 +98,17 @@
         //拿到对应的元素
         let leftMenuBox = document.getElementById('discovery-left-menu-box');
         let loopBox = document.getElementById('discovery-right-loop');
+        let contentBox = document.getElementById('discovery-center-part');
+        let contentBoxHeight = contentBox.offsetHeight - document.documentElement.clientHeight + 90;
+        //10199
+        //console.log("contentBox == > height == >" + contentBoxHeight);
+        let dy = document.documentElement.scrollTop;
+        //10192
+        //console.log("dy == > " + dy);
         if (leftMenuBox && loopBox) {
           //console.log(leftMenuBox.offsetTop);
           //判断当前滑动的距离
-          let dy = document.documentElement.scrollTop;
+
           if (dy >= 90) {
             leftMenuBox.style.top = '10px';
             loopBox.style.top = '10px';
@@ -81,6 +116,13 @@
             leftMenuBox.style.top = (90 - dy) + 'px';
             loopBox.style.top = (90 - dy) + 'px';
           }
+        }
+        if (dy >= contentBoxHeight && !this.isLoading) {
+          //触发加载更多内容
+          console.log("触发加载更多内容...");
+          this.isLoading = true;
+          //执行加载更多的代码
+          this.loaderMore();
         }
       }
     },

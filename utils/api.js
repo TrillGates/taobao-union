@@ -14,6 +14,10 @@ export default {
     return request.requestGet(baseUrl + "discovery/" + materialId + "/" + page);
   },
 
+  getCategoryContentByProxy(materialId, page) {
+    return request.requestGet("/union/discovery/" + materialId + "/" + page);
+  },
+
   getRecommendCategories() {
     return request.requestGet(baseUrl + "recommend/categories")
   },
