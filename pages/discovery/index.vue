@@ -6,7 +6,8 @@
           <ul>
             <li :class="currentCategoryId===item.id?'discovery-category-active':''"
                 v-for="(item,index) in categoriesList"
-                :key="index">
+                :key="index"
+                @click="onLeftMenuClick(item)">
               <span v-text="item.title"></span>
             </li>
           </ul>
@@ -17,12 +18,12 @@
           <div class="item-left-cover float-left">
             <el-image
               style="width: 180px; height: 180px"
-              :src="item.pict_url"
+              :src="item.pict_url+'_180x180xzq90.jpg_.webp'"
               fit="cover"></el-image>
           </div>
           <div class="float-left item-right-info">
             <div class="item-title">
-              <a :href="item.coupon_click_url+'_180x180xzq90.jpg_.webp'" target="_blank">
+              <a :href="item.coupon_click_url" target="_blank">
                  <span v-text="item.title">
 
               </span>
@@ -76,9 +77,17 @@
       }
     },
     methods: {
-      //加载更多
-      loaderMore() {
-        this.currentPage++;
+      onLeftMenuClick(item) {
+        document.documentElement.scrollTop = 0;
+        this.currentCategoryId = item.id;
+        this.currentPage = 1;
+        this.contentList.length = 0;
+        this.contentList = [];
+        this.isLoading = true;
+        //去加载这个分类内容
+        this.loadData();
+      },
+      loadData() {
         api.getCategoryContentByProxy(this.currentCategoryId, this.currentPage).then(result => {
           console.log(result);
           if (result.code === api.SUCCESS_CODE) {
@@ -94,6 +103,11 @@
             this.currentPage--;
           }
         });
+      },
+      //加载更多
+      loaderMore() {
+        this.currentPage++;
+        this.loadData();
       },
       to2Bit(num) {
         return num.toFixed(2);
@@ -154,6 +168,8 @@
     },
     mounted() {
       this.onScroll();
+      let contentBox = document.getElementById('discovery-center-part');
+      contentBox.style.minHeight = window.screen.height + 'px';
       window.addEventListener("scroll", this.onScroll);
     }
   }
