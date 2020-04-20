@@ -2,12 +2,15 @@
   <div class="center-box clear-fix">
     <div class="discovery-content-box">
       <div class="discovery-left-part float-left">
-        <ul>
-          <li :class="currentCategoryId===item.id?'discovery-category-active':''" v-for="(item,index) in categoriesList"
-              :key="index">
-            <span v-text="item.title"></span>
-          </li>
-        </ul>
+        <div id="discovery-left-menu-box">
+          <ul>
+            <li :class="currentCategoryId===item.id?'discovery-category-active':''"
+                v-for="(item,index) in categoriesList"
+                :key="index">
+              <span v-text="item.title"></span>
+            </li>
+          </ul>
+        </div>
       </div>
       <div class="discovery-center-part float-left">
         <div class="discovery-content-item clear-fix" v-for="(item,index) in contentList" :key="index">
@@ -15,7 +18,7 @@
             <el-image
               style="width: 180px; height: 180px"
               :src="item.pict_url"
-              :fit="fit"></el-image>
+              fit="cover"></el-image>
           </div>
           <div class="float-left item-right-info">
             <div class="item-title">
@@ -40,11 +43,11 @@
         </div>
       </div>
       <div class="discovery-right-part float-left">
-        <div class="discovery-right-loop">
-          <el-carousel height="150px">
+        <div id="discovery-right-loop">
+          <el-carousel height="275px">
             <el-carousel-item v-for="(item,index) in loopData" :key="index">
               <el-image
-                style="width: 275px; height: 150px"
+                style="width: 275px; height: 275px"
                 :src="item.pict_url"
                 fit="cover"></el-image>
             </el-carousel-item>
@@ -61,6 +64,24 @@
     methods: {
       to2Bit(num) {
         return num.toFixed(2);
+      },
+      onScroll() {
+        console.log("on window scroll...")
+        //拿到对应的元素
+        let leftMenuBox = document.getElementById('discovery-left-menu-box');
+        let loopBox = document.getElementById('discovery-right-loop');
+        if (leftMenuBox && loopBox) {
+          //console.log(leftMenuBox.offsetTop);
+          //判断当前滑动的距离
+          let dy = document.documentElement.scrollTop;
+          if (dy >= 90) {
+            leftMenuBox.style.top = '10px';
+            loopBox.style.top = '10px';
+          } else {
+            leftMenuBox.style.top = (90 - dy) + 'px';
+            loopBox.style.top = (90 - dy) + 'px';
+          }
+        }
       }
     },
     async asyncData() {
@@ -83,12 +104,29 @@
           }
         }
       }
+    },
+    mounted() {
+      this.onScroll();
+      window.addEventListener("scroll", this.onScroll);
     }
   }
 </script>
 <style>
 
-  .discovery-right-loop .el-carousel__button {
+  #discovery-right-loop {
+    position: fixed;
+    width: 275px;
+    box-shadow: 0px 5px 10px #d4d4d4;
+    height: 275px;
+  }
+
+
+  #discovery-left-menu-box {
+    position: fixed;
+    box-shadow: 0px 5px 10px #d4d4d4;
+  }
+
+  #discovery-right-loop .el-carousel__button {
     width: 8px;
     height: 8px;
     border-radius: 50%;
@@ -145,18 +183,19 @@
     font-weight: 600;
   }
 
-  .discovery-left-part li:hover {
+  #discovery-left-menu-box li:hover {
     background: #ff4500;
     color: #fff;
   }
 
-  .discovery-left-part span {
+  #discovery-left-menu-box span {
     line-height: 40px;
   }
 
-  .discovery-left-part li {
+  #discovery-left-menu-box li {
     width: 105px;
     height: 40px;
+    list-style: none;
     cursor: pointer;
     text-align: center;
   }
@@ -166,8 +205,6 @@
     margin-right: 10px;
     width: 105px;
     margin-left: 5px;
-    background: #fff;
-    box-shadow: 0px 5px 10px #d4d4d4;
   }
 
 
@@ -201,14 +238,13 @@
 
   .discovery-center-part {
     width: 710px;
-    margin-left: 10px;
+    margin-left: 130px;
     margin-right: 10px;
   }
 
   .discovery-right-part {
-    width: 270px;
+    width: 275px;
     margin-right: 5px;
-    box-shadow: 0px 5px 10px #d4d4d4;
     margin-left: 10px;
   }
 
