@@ -22,7 +22,7 @@
           </div>
           <div class="float-left item-right-info">
             <div class="item-title">
-              <a :href="item.coupon_click_url" target="_blank">
+              <a :href="item.coupon_click_url+'_180x180xzq90.jpg_.webp'" target="_blank">
                  <span v-text="item.title">
 
               </span>
@@ -40,6 +40,11 @@
             </div>
           </div>
           <a target="_blank" :href="item.coupon_click_url" class="discovery-buy-btn" type="danger" size="small">领券购买</a>
+        </div>
+        <div
+          v-loading="isLoading"
+          class="discovery-content-loading">
+
         </div>
       </div>
       <div class="discovery-right-part float-left">
@@ -275,6 +280,13 @@
     position: relative;
     padding: 10px;
     background: #fff;
+    box-shadow: 0px 5px 10px #d4d4d4;
+  }
+
+  .discovery-content-loading {
+    width: 100%;
+    margin-bottom: 10px;
+    height: 104px;
     box-shadow: 0px 5px 10px #d4d4d4;
   }
 
