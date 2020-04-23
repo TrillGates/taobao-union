@@ -25,6 +25,10 @@ export default {
   getRecommendContent(categoryId) {
     return request.requestGet(baseUrl + "/recommend/" + categoryId)
   },
+
+  getOnSellContent(page) {
+    return request.requestGet(baseUrl + "/onSell/" + page)
+  },
   getRecommendContentByProxy(categoryId) {
     return request.requestGet("/union/recommend/" + categoryId)
   }
