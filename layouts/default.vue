@@ -14,7 +14,9 @@
             <a href="/discovery">
               <li :class="$store.state.currentActive==='discovery'?'menu-active':''">发现</li>
             </a>
-            <li :class="$store.state.currentActive==='onSell'?'menu-active':''">特惠</li>
+            <a href="/onSell">
+              <li :class="$store.state.currentActive==='onSell'?'menu-active':''">特惠</li>
+            </a>
           </ul>
         </div>
         <div class="header-search-box float-left">

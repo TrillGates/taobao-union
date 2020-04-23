@@ -55,7 +55,7 @@
               <a target="_blank" :href="item.coupon_click_url">
                 <el-image
                   style="width: 275px; height: 275px"
-                  :src="item.pict_url"
+                  :src="item.pict_url+'_270x270xzq90.jpg_.webp'"
                   fit="cover">
                 </el-image>
               </a>
