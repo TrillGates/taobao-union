@@ -8,11 +8,11 @@
             :src="item.pict_url+'_270x270xzq90.jpg_.webp'"
             fit="cover"></el-image>
           <div class="onSell-off-prise">
-            {{item.coupon_amount}}
+            省{{item.coupon_amount}}元
           </div>
         </div>
         <div class="onSell-item-prise">
-          <span v-text="'￥'+item.zk_final_price"></span>
+          <span class="onSell-item-final-prise" v-text="'￥'+item.zk_final_price"></span>
           <span>
             券后价:
             <span v-text="to2Bit(item.zk_final_price-item.coupon_amount)"></span>
@@ -56,20 +56,63 @@
   }
 </script>
 <style>
+
+  .onSell-item-title {
+    font-weight: 600;
+    min-height: 43px;
+    font-size: 16px;
+    color: #000;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+  }
+
+  .onSell-item-volume {
+    font-size: 14px;
+    color: #7f828b;
+    margin-bottom: 5px;
+  }
+
+  .onSell-item-prise {
+    color: #F40;
+    margin-bottom: 10px;
+    font-size: 18px;
+  }
+
+  .onSell-item-final-prise {
+    text-decoration: line-through;
+  }
+
+  .onSell-content-box {
+    margin-top: 20px;
+  }
+
+  .onSell-content-item:hover {
+    border: #c9302c solid 1px;
+
+  }
+
   .onSell-content-item {
-    width: 263px;
+    width: 275px;
     margin: 5px;
     padding: 5px;
     border: #dfdfdf 1px solid;
   }
 
   .onSell-off-prise {
+    background: #c9302c;
+    color: #fff;
+    font-size: 14px;
+    text-align: center;
+    padding: 4px 18px;
     position: absolute;
     top: 0;
     right: 0;
   }
 
   .onSell-item-cover {
+    margin-bottom: 10px;
     position: relative;
   }
 </style>
