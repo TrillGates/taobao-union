@@ -2,6 +2,7 @@
   <div class="center-box">
     <div class="search-content-box clear-fix">
       <div class="search-content-item float-left"
+           v-if="searchResult!==undefined"
            v-for="(item,index) in searchResult" :key="index">
         <a :href="item.coupon_share_url===null?item.url:item.coupon_share_url" target="_blank">
           <div class="search-content-cover">
@@ -36,15 +37,15 @@
       },
     },
     asyncData(context) {
-      console.log('isClient == > ' + process.server);
+      //console.log('isClient == > ' + process.server);
       //console.log(context.route.query);
       let keyword = context.query.keyword;
-      console.log(keyword);
+      //console.log(keyword);
       if (process.server) {
-        return api.doSearch(encodeURI(keyword), 1).then(result => {
-          console.log(result);
+        return api.doSearch(encodeURIComponent(keyword), 1).then(result => {
+          //console.log(result);
           if (result.code === api.SUCCESS_CODE) {
-            console.log(result.data);
+            //console.log(result.data);
             return {
               searchResult: result.data.tbk_dg_material_optional_response.result_list.map_data
             };

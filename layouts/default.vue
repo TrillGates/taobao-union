@@ -20,7 +20,9 @@
           </ul>
         </div>
         <div class="header-search-box float-left">
-          <el-input v-model="keyword" placeholder="复制（淘宝的标题或者关键字）找优惠券!" size="small"></el-input>
+          <el-input
+            @keyup.enter.native="toSearchPage" v-model="keyword" placeholder="复制（淘宝的标题或者关键字）找优惠券!"
+            size="small"></el-input>
         </div>
         <div class="header-search-btn float-left">
           <el-button type="danger" size="small" @click="toSearchPage">搜索</el-button>
@@ -67,15 +69,16 @@
         keyword: ''
       }
     },
+    mounted() {
+      if (this.$router.app.context.query.keyword !== undefined) {
+        this.keyword = this.$router.app.context.query.keyword;
+      }
+    },
     methods: {
       toSearchPage() {
+        console.log('toSearchPage...');
         ///search?kw=测试
-        this.$router.push({
-          path: '/search',
-          query: {
-            keyword: this.keyword
-          }
-        });
+        window.location.href = '/search?keyword=' + encodeURIComponent(this.keyword);
       }
     }
   }
