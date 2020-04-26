@@ -4,13 +4,19 @@
       <div class="discovery-left-part float-left">
         <div id="discovery-left-menu-box">
           <ul>
-            <li :class="currentCategoryId===item.id?'discovery-category-active':''"
-                v-for="(item,index) in categoriesList"
-                :key="index"
-                @click="onLeftMenuClick(item)">
+            <li
+              :class="currentCategoryId===item.id?'discovery-category-active':''"
+              v-for="(item,index) in categoriesList"
+              :key="index"
+              @click="onLeftMenuClick(item)">
               <span v-text="item.title"></span>
             </li>
           </ul>
+          <div class="discovery-to-top">
+            <a href="#top">
+              <span class="el-icon-upload2"></span>
+            </a>
+          </div>
         </div>
       </div>
       <div class="discovery-center-part float-left" id="discovery-center-part">
@@ -185,9 +191,35 @@
   }
 
 
+  #discovery-left-menu-box > ul {
+    box-shadow: 0px 5px 10px #d4d4d4;
+  }
+
+  .discovery-to-top a {
+    text-decoration: none;
+    color: #7f828b;
+  }
+
+  .discovery-to-top {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .discovery-to-top span:hover {
+    border: 1px solid dodgerblue;
+    color: dodgerblue;
+  }
+
+  .discovery-to-top span {
+    padding: 0 12px;
+    cursor: pointer;
+    border-radius: 50%;
+    border: 1px solid #7f828b;
+  }
+
   #discovery-left-menu-box {
     position: fixed;
-    box-shadow: 0px 5px 10px #d4d4d4;
   }
 
   #discovery-right-loop .el-carousel__button {

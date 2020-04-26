@@ -29,6 +29,9 @@ export default {
   getOnSellContent(page) {
     return request.requestGet(baseUrl + "/onSell/" + page)
   },
+  getOnSellContentByProxy(page) {
+    return request.requestGet(  "/union/onSell/" + page)
+  },
   getRecommendContentByProxy(categoryId) {
     return request.requestGet("/union/recommend/" + categoryId)
   }

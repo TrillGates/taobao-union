@@ -1,6 +1,6 @@
 <template>
   <div class="center-box">
-    <div class="onSell-content-box clear-fix">
+    <div class="onSell-content-box clear-fix" id="onSell-content-box">
       <div class="onSell-content-item float-left" v-for="(item,index) in contentList" :key="index">
         <a :href="item.coupon_click_url" target="_blank">
           <div class="onSell-item-cover">
@@ -23,13 +23,21 @@
             <span v-text="item.volume"></span>
             ·人已购买
           </div>
-          <div class="onSell-item-title">
+          <div
+            class="onSell-item-title">
             <p v-text="item.title">
 
             </p>
           </div>
         </a>
       </div>
+    </div>
+    <div
+      v-if="isLoading&&hasMore"
+      class="onSell-page-loading"
+      v-loading="isLoading"
+      element-loading-text="正在玩命加载中...">
+
     </div>
   </div>
 </template>
@@ -38,27 +46,88 @@
   import api from '../../utils/api';
 
   export default {
+    data() {
+      return {
+        isLoading: false,
+        currentPage: 1,
+        hasMore: true
+      }
+    },
     methods: {
       to2Bit(num) {
         return num.toFixed(2);
       },
+      onScroll() {
+        let contentBox = document.getElementById('onSell-content-box');
+        let contentBoxHeight = contentBox.offsetHeight - document.documentElement.clientHeight + 90;
+        let dy = document.documentElement.scrollTop;
+        // console.log(dy);
+        if (dy >= contentBoxHeight && !this.isLoading && this.hasMore) {
+          //触发加载更多内容
+          console.log("触发加载更多内容...");
+          this.isLoading = true;
+          //执行加载更多的代码
+          this.loaderMore();
+        }
+      },
+      loaderMore() {
+
+        this.currentPage++;
+        api.getOnSellContentByProxy(this.currentPage).then(result => {
+          if (result.code === api.SUCCESS_CODE) {
+            console.log(result.data.tbk_dg_optimus_material_response)
+            if (result.data.tbk_dg_optimus_material_response !== null) {
+              this.contentList = this.contentList.concat(result.data.tbk_dg_optimus_material_response.result_list.map_data);
+            } else {
+              this.$message({
+                message: '没有更多内容',
+                type: 'error',
+                center: true
+              });
+              this.hasMore = false;
+            }
+          } else {
+            this.currentPage--;
+          }
+          this.isLoading = false;
+        });
+      }
     },
     asyncData() {
       return api.getOnSellContent(1).then(result => {
-        console.log(result);
+        //console.log(result);
         if (result.code === api.SUCCESS_CODE) {
-          let data = result.data.tbk_dg_optimus_material_response.result_list.map_data;
-          return {contentList: data};
+          if (result.data.tbk_dg_optimus_material_response !== null) {
+            let data = result.data.tbk_dg_optimus_material_response.result_list.map_data;
+            return {contentList: data};
+          }
         }
       });
     },
     mounted() {
       this.$store.commit('setCurrentActive', 'onSell');
+      //设置滚动监听
+      window.addEventListener('scroll', this.onScroll)
     }
   }
 </script>
 
 <style>
+
+  .onSell-page-loading .el-loading-spinner .path {
+    stroke: #47494e;
+  }
+
+  .onSell-page-loading .el-loading-spinner .el-loading-text {
+    color: #47494e;
+  }
+
+  .onSell-page-loading {
+    width: 100%;
+    margin-bottom: 20px;
+    box-shadow: 0px 5px 10px #d4d4d4;
+    height: 200px;
+  }
 
   .onSell-item-title {
     font-weight: 600;
