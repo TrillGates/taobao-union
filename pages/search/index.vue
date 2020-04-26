@@ -1,8 +1,23 @@
 <template>
-  <div>
-    <div class="item" v-for="(item,index) in searchResult"
-         :key="index">
-      {{item.title}}
+  <div class="center-box">
+    <div class="search-content-box clear-fix">
+      <div class="search-content-item float-left"
+           v-for="(item,index) in searchResult" :key="index">
+        <div class="search-content-cover">
+          <el-image :src="item.pict_url"></el-image>
+        </div>
+        <div class="search-content-prise-info">
+          <span v-text="'￥'+item.zk_final_price"></span>
+          <span>券后价: <span v-text="to2Bit(item.zk_final_price-item.coupon_amount)"></span>
+          </span>
+        </div>
+        <div class="search-content-volume">
+          <span v-text="item.volume+'·已购买'"></span>
+        </div>
+        <div class="search-content-title">
+          <p v-text="item.title"></p>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -11,6 +26,11 @@
   import api from '../../utils/api';
 
   export default {
+    methods: {
+      to2Bit(num) {
+        return num.toFixed(2);
+      },
+    },
     asyncData(context) {
       console.log('isClient == > ' + process.server);
       //console.log(context.route.query);
@@ -41,5 +61,13 @@
 </script>
 <style>
 
+  .search-content-item {
+    width: 275px;
+  }
+
+  .search-content-cover .el-image {
+    width: 263px;
+    height: 263px;
+  }
 
 </style>
