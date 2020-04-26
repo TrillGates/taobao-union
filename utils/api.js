@@ -30,9 +30,16 @@ export default {
     return request.requestGet(baseUrl + "/onSell/" + page)
   },
   getOnSellContentByProxy(page) {
-    return request.requestGet(  "/union/onSell/" + page)
+    return request.requestGet("/union/onSell/" + page)
   },
   getRecommendContentByProxy(categoryId) {
-    return request.requestGet("/union/recommend/" + categoryId)
+    return request.requestGet("/union/recommend/" + categoryId);
+  },
+
+  doSearch(keyword, page) {
+    return request.requestGet(baseUrl + "/search?page=" + page + "&keyword=" + keyword);
+  },
+  doSearchByProxy(keyword, page) {
+    return request.requestGet("/union/search?page=" + page + "&keyword=" + keyword);
   }
 }
