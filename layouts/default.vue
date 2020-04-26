@@ -8,10 +8,10 @@
         </div>
         <div class="header-menu float-left">
           <ul>
-            <a href="/discovery">
+            <a href="/">
               <li :class="$store.state.currentActive==='discovery'?'menu-active':''">发现</li>
             </a>
-            <a href="/">
+            <a href="/ticket">
               <li :class="$store.state.currentActive==='index'?'menu-active':''">券场</li>
             </a>
             <a href="/onSell">
@@ -23,7 +23,7 @@
           <el-input placeholder="复制（淘宝的标题或者关键字）找优惠券!" size="small"></el-input>
         </div>
         <div class="header-search-btn float-left">
-          <el-button type="danger" size="small">搜索</el-button>
+          <el-button type="danger" size="small" @click="toSearchPage">搜索</el-button>
         </div>
       </div>
     </div>
@@ -60,7 +60,15 @@
     </div>
   </div>
 </template>
-
+<script>
+  export default {
+    methods: {
+      toSearchPage() {
+        this.$router.push("/search");
+      }
+    }
+  }
+</script>
 <style>
   html {
     font-family: "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;

@@ -1,263 +1,354 @@
 <template>
-  <section class="container">
-    <div class="center-box">
-      <div id="recommend-category-box">
-        <ul class="clear-fix">
-          <li :class="item.favorites_id!==currentFavoriteId?'float-left':'float-left recommend-menu-active'"
-              v-for="(item,index) in categories"
-              :key="index" v-text="item.favorites_title" @click="onCategoryItemClick(item)">
-          </li>
-          <li class="float-right">
+  <div class="center-box clear-fix">
+    <div class="discovery-content-box">
+      <div class="discovery-left-part float-left">
+        <div id="discovery-left-menu-box">
+          <ul>
+            <li
+              :class="currentCategoryId===item.id?'discovery-category-active':''"
+              v-for="(item,index) in categoriesList"
+              :key="index"
+              @click="onLeftMenuClick(item)">
+              <span v-text="item.title"></span>
+            </li>
+          </ul>
+          <div class="discovery-to-top">
             <a href="#top">
-              <span class="back-top el-icon-upload2"></span>
+              <span class="el-icon-upload2"></span>
             </a>
-          </li>
-        </ul>
-      </div>
-      <div id="recommend-content-list-box"
-           v-loading="loading">
-        <div class="recommend-content-title">
-          <span v-html="currentCategory"></span>
-        </div>
-        <div class="recommend-content-list clear-fix">
-          <div class="recommend-content-item float-left"
-               v-for="(item,index) in content.tbk_uatm_favorites_item_get_response.results.uatm_tbk_item" :key="index">
-            <div class="recommend-item-cover">
-              <img :src="item.pict_url+'_240x240xzq90.jpg_.webp'">
-            </div>
-            <div class="recommend-item-title">
-              <a v-text="item.title" :href="item.coupon_click_url!==null?item.coupon_click_url:item.click_url"
-                 target="_blank"></a>
-            </div>
-            <div class="recommend-item-info">
-              <a v-if="item.coupon_click_url!==null" class="buy-btn" :href="item.coupon_click_url"
-                 target="_blank">领券购买</a>
-              <span class="recommend-prise" v-text="item.coupon_click_url===null?'晚了，无优惠券':'原价：'+item.zk_final_price">原价：34.00</span>
-            </div>
-            <span class="recommend-coupon-info" v-if="item.coupon_info!==null" v-text="item.coupon_info">
-
-            </span>
           </div>
         </div>
       </div>
-    </div>
-  </section>
-</template>
+      <div class="discovery-center-part float-left" id="discovery-center-part">
+        <div class="discovery-content-item clear-fix" v-for="(item,index) in contentList" :key="index">
+          <div class="item-left-cover float-left">
+            <el-image
+              style="width: 180px; height: 180px"
+              :src="item.pict_url+'_180x180xzq90.jpg_.webp'"
+              fit="cover"></el-image>
+          </div>
+          <div class="float-left item-right-info">
+            <div class="item-title">
+              <a :href="item.coupon_click_url" target="_blank">
+                 <span v-text="item.title">
 
+              </span>
+              </a>
+            </div>
+            <div class="prise-info">
+              <span class="original-prise" v-text="'原价:'+item.zk_final_price"></span>
+              <span class="off-prise">券后价: <span v-text="to2Bit(item.zk_final_price-item.coupon_amount)"></span></span>
+
+            </div>
+            <div class="sell-info">
+              <span v-text="item.volume"></span>
+              <span>·</span>
+              <span>人已购买</span>
+            </div>
+          </div>
+          <a target="_blank" :href="item.coupon_click_url" class="discovery-buy-btn" type="danger" size="small">领券购买</a>
+        </div>
+        <div
+          v-loading="isLoading"
+          class="discovery-content-loading">
+
+        </div>
+      </div>
+      <div class="discovery-right-part float-left">
+        <div id="discovery-right-loop">
+          <el-carousel height="275px">
+            <el-carousel-item v-for="(item,index) in loopData" :key="index">
+              <a target="_blank" :href="item.coupon_click_url">
+                <el-image
+                  style="width: 275px; height: 275px"
+                  :src="item.pict_url+'_270x270xzq90.jpg_.webp'"
+                  fit="cover">
+                </el-image>
+              </a>
+            </el-carousel-item>
+          </el-carousel>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
 <script>
   import api from '../utils/api';
 
   export default {
     data() {
       return {
-        loading: false
+        isLoading: false,
+        currentPage: 1
       }
     },
     methods: {
-      onCategoryItemClick(item) {
+      onLeftMenuClick(item) {
         document.documentElement.scrollTop = 0;
-        console.log("loadContentByCategory...");
-        // console.log(item.favorites_id);
-        // console.log(item.favorites_title);
-        this.currentFavoriteId = item.favorites_id;
-        this.currentCategory = item.favorites_title.split('').join("<em>/</em>");
-        //加载对应的内容
-        this.loadContentByCategory(item.favorites_id);
+        this.currentCategoryId = item.id;
+        this.currentPage = 1;
+        this.contentList.length = 0;
+        this.contentList = [];
+        this.isLoading = true;
+        //去加载这个分类内容
+        this.loadData();
       },
-
-      loadContentByCategory(favoriteId) {
-        this.loading = true;
-        this.content.tbk_uatm_favorites_item_get_response.results.uatm_tbk_item.length = 0;
-        this.content.tbk_uatm_favorites_item_get_response.results.uatm_tbk_item = [];
-        api.getRecommendContentByProxy(favoriteId).then(result => {
-          this.loading = false;
+      loadData() {
+        api.getCategoryContentByProxy(this.currentCategoryId, this.currentPage).then(result => {
+          console.log(result);
           if (result.code === api.SUCCESS_CODE) {
-            this.content = result.data
+            console.log("size == > " + result.data.length);
+            this.contentList = this.contentList.concat(result.data);
+            //如果说没有更多
+            if (result.data.length === 52) {
+              //不用改值
+              this.isLoading = false;
+            }
           } else {
-            //
+            this.isLoading = false;
+            this.currentPage--;
           }
         });
       },
+      //加载更多
+      loaderMore() {
+        this.currentPage++;
+        this.loadData();
+      },
+      to2Bit(num) {
+        return num.toFixed(2);
+      },
       onScroll() {
-        let menuBox = document.getElementById('recommend-category-box');
-        if (menuBox) {
-          let dy = document.documentElement.scrollTop;
-          if (dy < 90) {
-            menuBox.style.top = (90 - dy) + 'px';
-          } else {
-            menuBox.style.top = '0px';
-          }
+        console.log("on window scroll...")
+        //拿到对应的元素
+        let leftMenuBox = document.getElementById('discovery-left-menu-box');
+        let loopBox = document.getElementById('discovery-right-loop');
+        let contentBox = document.getElementById('discovery-center-part');
+        let contentBoxHeight = contentBox.offsetHeight - document.documentElement.clientHeight + 90;
+        //10199
+        //console.log("contentBox == > height == >" + contentBoxHeight);
+        let dy = document.documentElement.scrollTop;
+        //10192
+        //console.log("dy == > " + dy);
+        if (leftMenuBox && loopBox) {
+          //console.log(leftMenuBox.offsetTop);
+          //判断当前滑动的距离
 
+          if (dy >= 90) {
+            leftMenuBox.style.top = '10px';
+            loopBox.style.top = '10px';
+          } else {
+            leftMenuBox.style.top = (90 - dy) + 'px';
+            loopBox.style.top = (90 - dy) + 'px';
+          }
+        }
+        if (dy >= contentBoxHeight && !this.isLoading) {
+          //触发加载更多内容
+          console.log("触发加载更多内容...");
+          this.isLoading = true;
+          //执行加载更多的代码
+          this.loaderMore();
+        }
+      }
+    },
+    async asyncData() {
+      let categoriesResult = await api.getCategories();
+      console.log(categoriesResult);
+      if (categoriesResult.code === api.SUCCESS_CODE) {
+        let categoriesList = categoriesResult.data;
+        //拿推荐里的内容
+        let recommendItem = categoriesList[0];
+        let currentCategoryId = recommendItem.id;
+        let contentResult = await api.getCategoryContent(currentCategoryId, 1);
+        let loopData = contentResult.data.slice(0, 5);
+        if (contentResult.code === api.SUCCESS_CODE) {
+          //console.log(contentResult.data);
+          return {
+            currentCategoryId,
+            categoriesList,
+            contentList: contentResult.data,
+            loopData,
+          }
         }
       }
     },
     mounted() {
-      this.$store.commit('setCurrentActive', 'index');
+      this.$store.commit('setCurrentActive', 'discovery');
       this.onScroll();
-      console.log(document.documentElement.clientHeight);
-      let listBox = document.getElementById('recommend-content-list-box');
-      if (listBox) {
-        listBox.style.minHeight = document.documentElement.clientHeight + "px";
-      }
+      let contentBox = document.getElementById('discovery-center-part');
+      contentBox.style.minHeight = window.screen.height + 'px';
       window.addEventListener("scroll", this.onScroll);
-    },
-    async asyncData() {
-      console.log("test load data....");
-      let categoryResult = await api.getRecommendCategories();
-      if (categoryResult.code === api.SUCCESS_CODE) {
-        //请求分类成功
-        let currentId = categoryResult.data[0].favorites_id;
-        //去获取分类商品列表
-        let contentResult = await api.getRecommendContent(currentId);
-        //console.log(contentResult.data.tbk_uatm_favorites_item_get_response.results.uatm_tbk_item);
-        let titleArray = categoryResult.data[0].favorites_title.split('');
-        // let url = contentResult.data.tbk_uatm_favorites_item_get_response.results.uatm_tbk_item[0];
-        // console.log(url);
-        if (contentResult.code === api.SUCCESS_CODE) {
-          return {
-            categories: categoryResult.data,
-            content: contentResult.data,
-            currentCategory: titleArray.join("<em>/</em>"),
-            currentFavoriteId: currentId
-          };
-        }
-      } else {
-        //TODO:请求分类失败
-      }
     }
   }
 </script>
-
 <style>
 
-  .recommend-content-title span {
-    font-size: 20px;
-    font-weight: 600;
-    color: #4D555D;
-    font-style: normal;
-    margin: 0 3px;
+  #discovery-right-loop {
+    position: fixed;
+    width: 275px;
+    box-shadow: 0px 5px 10px #d4d4d4;
+    height: 275px;
   }
 
-  .recommend-content-title em {
-    margin-left: 5px;
-    margin-right: 5px;
-    font-weight: 400;
+
+  #discovery-left-menu-box > ul {
+    box-shadow: 0px 5px 10px #d4d4d4;
+  }
+
+  .discovery-to-top a {
+    text-decoration: none;
+    color: #7f828b;
+  }
+
+  .discovery-to-top {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .discovery-to-top span:hover {
+    border: 1px solid dodgerblue;
+    color: dodgerblue;
+  }
+
+  .discovery-to-top span {
+    padding: 0 12px;
+    cursor: pointer;
+    border-radius: 50%;
+    border: 1px solid #7f828b;
+  }
+
+  #discovery-left-menu-box {
+    position: fixed;
+  }
+
+  #discovery-right-loop .el-carousel__button {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+
+  .original-prise {
+    color: #999999;
+    text-decoration: line-through;
+  }
+
+  .off-prise {
+    color: orangered;
+  }
+
+  .discovery-buy-btn:hover {
+    background-color: orangered;
+    border-color: orangered;
+  }
+
+  .discovery-buy-btn {
+    text-decoration: none;
+    padding: 8px 20px;
+    border-radius: 5px;
+    position: absolute;
+    bottom: 20px;
+    background-color: #F56C6C;
+    border-color: #F56C6C;
+    color: white;
+    right: 20px;
+  }
+
+  .discovery-category-active {
+    color: #fff;
+    background: #ff4500;
+  }
+
+  .discovery-content-box {
+    margin-top: 20px;
+  }
+
+  .sell-info {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    color: #47494e;
     font-size: 16px;
   }
 
-  .recommend-content-title {
-    text-align: center;
-    margin-bottom: 30px;
+
+  .prise-info {
+    font-size: 16px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-weight: 600;
   }
 
-  #recommend-content-list-box {
-    margin-top: 100px;
-    box-shadow: 0 5px 10px #d4d4d4;
-  }
-
-  .recommend-coupon-info {
-    position: absolute;
-    right: 12px;
-    top: 20px;
-    padding: 5px 10px;
-    border-bottom-left-radius: 5px;
-    border-top-left-radius: 5px;
-    background: #c9302c;
+  #discovery-left-menu-box li:hover {
+    background: #ff4500;
     color: #fff;
   }
 
-  .buy-btn {
-    text-decoration: none;
-    display: inline-block;
-    line-height: 1;
-    white-space: nowrap;
-    cursor: pointer;
-    background: #FFF;
-    border: 1px solid #DCDFE6;
-    color: #606266;
-    -webkit-appearance: none;
-    text-align: center;
-    box-sizing: border-box;
-    outline: 0;
-    margin: 0;
-    transition: .1s;
-    font-weight: 500;
-    padding: 12px 20px;
-    font-size: 14px;
-    border-radius: 4px;
-    color: #FFF;
-    background-color: #F56C6C;
-    border-color: #F56C6C;
+  #discovery-left-menu-box span {
+    line-height: 40px;
   }
 
-  .recommend-prise {
-    margin-left: 10px;
-    font-weight: 600;
-    color: #ebb563;
-  }
-
-  .recommend-item-info {
-    margin-top: 10px;
-  }
-
-  .recommend-item-title a {
-    margin-top: 10px;
-    margin-top: 10px;
-    text-decoration: none;
-    color: #47494e;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-    overflow: hidden;
-  }
-
-  .recommend-content-item {
-    width: 265px;
-    position: relative;
-    box-shadow: 0 5px 10px #d4d4d4;
-    background: #fff;
-    padding: 10px 10px;
-    margin: 10px;
-    height: 370px;
-  }
-
-  .recommend-item-cover img {
-    border-radius: 5px;
-    width: 243px;
-    height: 243px;
-  }
-
-  .recommend-menu-active {
-    border-bottom: #c9302c 2px solid;
-    color: #c9302c !important;
-  }
-
-  #recommend-category-box li {
-    font-size: 16px;
-    cursor: pointer;
-    margin-left: 20px;
-    color: #8c8c8c;
-    margin-right: 20px;
-  }
-
-  #recommend-category-box ul > li:hover {
-    color: #c9302c;
-  }
-
-  #recommend-category-box {
-    height: 60px;
-    z-index: 1000;
-    top: 90px;
-    width: 1140px;
-    position: fixed;
-    margin-bottom: 30px;
-    background: #fff;
-    line-height: 58px;
-    box-shadow: 0 5px 10px #d4d4d4;
-  }
-
-  #recommend-category-box ul {
+  #discovery-left-menu-box li {
+    width: 105px;
+    height: 40px;
     list-style: none;
+    cursor: pointer;
+    text-align: center;
   }
-</style>
 
+  /*1140,分三份，左：120*/
+  .discovery-left-part {
+    margin-right: 10px;
+    width: 105px;
+    margin-left: 5px;
+  }
+
+
+  .item-left-cover img {
+    border-radius: 5px;
+  }
+
+  .item-title a {
+    font-size: 22px;
+    color: #47494e;
+    text-decoration: none;
+  }
+
+  .item-title {
+    cursor: pointer;
+    max-width: 500px;
+    font-weight: 600;
+  }
+
+  .item-right-info {
+    margin-left: 10px;
+  }
+
+  .discovery-content-item {
+    margin-bottom: 10px;
+    position: relative;
+    padding: 10px;
+    background: #fff;
+    box-shadow: 0px 5px 10px #d4d4d4;
+  }
+
+  .discovery-content-loading {
+    width: 100%;
+    margin-bottom: 10px;
+    height: 104px;
+    box-shadow: 0px 5px 10px #d4d4d4;
+  }
+
+  .discovery-center-part {
+    width: 710px;
+    margin-left: 130px;
+    margin-right: 10px;
+  }
+
+  .discovery-right-part {
+    width: 275px;
+    margin-right: 5px;
+    margin-left: 10px;
+  }
+
+</style>
