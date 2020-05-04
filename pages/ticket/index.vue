@@ -24,6 +24,9 @@
                v-for="(item,index) in content.tbk_uatm_favorites_item_get_response.results.uatm_tbk_item" :key="index">
             <div class="recommend-item-cover">
               <img :src="item.pict_url+'_240x240xzq90.jpg_.webp'">
+              <div class="discovery-qr-code-container" :id="'discovery-qr-code-container_'+index">
+
+              </div>
             </div>
             <div class="recommend-item-title">
               <a v-text="item.title" :href="item.coupon_click_url!==null?item.coupon_click_url:item.click_url"
@@ -31,11 +34,12 @@
             </div>
             <div class="recommend-item-info">
               <a v-if="item.coupon_click_url!==null" class="buy-btn" :href="item.coupon_click_url"
-                 target="_blank">领券购买</a>
+                 target="_blank"
+                 @mouseenter="onMouseHover(index,item.coupon_click_url)"
+                 @mouseleave="onMouseLeave(index)">领券购买</a>
               <span class="recommend-prise" v-text="item.coupon_click_url===null?'晚了，无优惠券':'原价：'+item.zk_final_price">原价：34.00</span>
             </div>
             <span class="recommend-coupon-info" v-if="item.coupon_info!==null" v-text="item.coupon_info">
-
             </span>
           </div>
         </div>
@@ -54,6 +58,28 @@
       }
     },
     methods: {
+      onMouseLeave(index) {
+        let qrCodeContainer = document.getElementById('discovery-qr-code-container_' + index);
+        if (qrCodeContainer) {
+          qrCodeContainer.innerHTML = '';
+          qrCodeContainer.style.display = 'none';
+        }
+      },
+      onMouseHover(index, url) {
+        console.log('onMouseHover...');
+        // //生成二维码
+        let qrCodeContainer = document.getElementById('discovery-qr-code-container_' + index);
+        if (qrCodeContainer) {
+          qrCodeContainer.style.display = 'block';
+          qrCodeContainer.innerHTML = '';
+          let qrcode = new QRCode(qrCodeContainer, {
+            width: 193,//设置宽高
+            height: 193,
+            correctLevel: QRCode.CorrectLevel.L//容错率，L/M/H
+          });
+          qrcode.makeCode('https:' + url);
+        }
+      },
       onCategoryItemClick(item) {
         document.documentElement.scrollTop = 0;
         console.log("loadContentByCategory...");
@@ -129,6 +155,30 @@
 </script>
 
 <style>
+
+  .discovery-qr-code-container img {
+    display: inline-block !important;
+    width: 193px;
+    margin-top: 25px;
+    height: 193px;
+  }
+
+  .recommend-item-cover {
+    position: relative;
+  }
+
+  .discovery-qr-code-container {
+    position: absolute;
+    text-align: center;
+    z-index: 2000;
+    display: none;
+    left: 0;
+    top: 0;
+    width: 243px;
+    height: 243px;
+    background: rgba(255, 255, 255, .8);
+  }
+
 
   .recommend-content-title span {
     font-size: 20px;
@@ -221,7 +271,7 @@
     height: 370px;
   }
 
-  .recommend-item-cover img {
+  .recommend-item-cover > img {
     border-radius: 5px;
     width: 243px;
     height: 243px;

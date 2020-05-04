@@ -13,6 +13,11 @@ module.exports = {
     ],
     link: [
       {rel: 'icon', type: 'image/x-icon', href: '/favicon.ico'}
+    ],
+    script: [
+      {
+        src: 'https://cdn.sunofbeaches.com/qrcodejs/qrcode.min.js'
+      }
     ]
   },
   css: [

@@ -53,7 +53,7 @@
              class="discovery-buy-btn"
              type="danger"
              size="small"
-             @mouseenter="onMouseHover(index)"
+             @mouseenter="onMouseHover(index,item.coupon_click_url)"
              @mouseleave="onMouseLeave(index)">领券购买</a>
         </div>
         <div
@@ -84,13 +84,6 @@
   import api from '../utils/api';
 
   export default {
-    head: {
-      script: [
-        {
-          src: 'https://cdn.sunofbeaches.com/qrcodejs/qrcode.min.js'
-        }
-      ]
-    },
     data() {
       return {
         isLoading: false,
@@ -105,7 +98,7 @@
           qrCodeContainer.style.display = 'none';
         }
       },
-      onMouseHover(index) {
+      onMouseHover(index, url) {
         console.log('onMouseHover...');
         // //生成二维码
         let qrCodeContainer = document.getElementById('discovery-qr-code-container_' + index);
@@ -115,9 +108,9 @@
           let qrcode = new QRCode(qrCodeContainer, {
             width: 150,//设置宽高
             height: 150,
-            correctLevel: QRCode.CorrectLevel.H//容错率，L/M/H
+            correctLevel: QRCode.CorrectLevel.L//容错率，L/M/H
           });
-          qrcode.makeCode('haha..');
+          qrcode.makeCode('https:' + url);
         }
       },
       onLeftMenuClick(item) {
