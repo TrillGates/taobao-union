@@ -7,7 +7,7 @@
       <h1>系统繁忙，请稍后重试..</h1>
     </div>
     <div class="to-home-page">
-      <nuxt-link to="/">回到首页</nuxt-link>
+      <a href="/">回到首页</a>
     </div>
 
   </div>
@@ -31,12 +31,12 @@
     margin-bottom: 100px;
   }
 
-  .page-404 {
+  .page-404, .error-page {
     min-height: 100px;
     text-align: center;
   }
 
-  .page-404 h1 {
+  .page-404 h1, .error-page h1 {
     margin-top: 100px;
   }
 </style>

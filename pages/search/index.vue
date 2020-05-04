@@ -66,7 +66,7 @@
           });
       },
       onScroll() {
-        console.log("on window scroll...")
+        //console.log("on window scroll...")
         //拿到对应的元素
         let contentBox = document.getElementById('search-content-box');
         let contentBoxHeight = contentBox.offsetHeight - document.documentElement.clientHeight + 90;

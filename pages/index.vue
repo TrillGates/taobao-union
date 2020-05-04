@@ -26,6 +26,9 @@
               style="width: 180px; height: 180px"
               :src="item.pict_url+'_180x180xzq90.jpg_.webp'"
               fit="cover"></el-image>
+            <div class="discovery-qr-code-container" :id="'discovery-qr-code-container_'+index">
+
+            </div>
           </div>
           <div class="float-left item-right-info">
             <div class="item-title">
@@ -46,7 +49,12 @@
               <span>人已购买</span>
             </div>
           </div>
-          <a target="_blank" :href="item.coupon_click_url" class="discovery-buy-btn" type="danger" size="small">领券购买</a>
+          <a target="_blank" :href="item.coupon_click_url"
+             class="discovery-buy-btn"
+             type="danger"
+             size="small"
+             @mouseenter="onMouseHover(index)"
+             @mouseleave="onMouseLeave(index)">领券购买</a>
         </div>
         <div
           v-loading="isLoading"
@@ -76,6 +84,13 @@
   import api from '../utils/api';
 
   export default {
+    head: {
+      script: [
+        {
+          src: 'https://cdn.sunofbeaches.com/qrcodejs/qrcode.min.js'
+        }
+      ]
+    },
     data() {
       return {
         isLoading: false,
@@ -83,6 +98,28 @@
       }
     },
     methods: {
+      onMouseLeave(index) {
+        let qrCodeContainer = document.getElementById('discovery-qr-code-container_' + index);
+        if (qrCodeContainer) {
+          qrCodeContainer.innerHTML = '';
+          qrCodeContainer.style.display = 'none';
+        }
+      },
+      onMouseHover(index) {
+        console.log('onMouseHover...');
+        // //生成二维码
+        let qrCodeContainer = document.getElementById('discovery-qr-code-container_' + index);
+        if (qrCodeContainer) {
+          qrCodeContainer.style.display = 'block';
+          qrCodeContainer.innerHTML = '';
+          let qrcode = new QRCode(qrCodeContainer, {
+            width: 150,//设置宽高
+            height: 150,
+            correctLevel: QRCode.CorrectLevel.H//容错率，L/M/H
+          });
+          qrcode.makeCode('haha..');
+        }
+      },
       onLeftMenuClick(item) {
         document.documentElement.scrollTop = 0;
         this.currentCategoryId = item.id;
@@ -119,7 +156,7 @@
         return num.toFixed(2);
       },
       onScroll() {
-        console.log("on window scroll...")
+        //console.log("on window scroll...")
         //拿到对应的元素
         let leftMenuBox = document.getElementById('discovery-left-menu-box');
         let loopBox = document.getElementById('discovery-right-loop');
@@ -194,6 +231,26 @@
   }
 </script>
 <style>
+
+  .discovery-qr-code-container img {
+    display: inline-block !important;
+    margin-top: 15px;
+  }
+
+  .discovery-qr-code-container {
+    position: absolute;
+    text-align: center;
+    display: none;
+    left: 0;
+    top: 0;
+    width: 180px;
+    height: 180px;
+    background: rgba(255, 255, 255, .8);
+  }
+
+  .item-left-cover {
+    position: relative;
+  }
 
   #discovery-right-loop {
     position: fixed;
