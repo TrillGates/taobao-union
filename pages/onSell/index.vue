@@ -71,7 +71,6 @@
         }
       },
       loaderMore() {
-
         this.currentPage++;
         api.getOnSellContentByProxy(this.currentPage).then(result => {
           if (result.code === api.SUCCESS_CODE) {

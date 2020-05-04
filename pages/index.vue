@@ -152,14 +152,26 @@
       }
     },
     async asyncData() {
-      let categoriesResult = await api.getCategories();
+      let categoriesResult;
+      if (process.client) {
+
+        categoriesResult = await api.getCategoriesByProxy();
+      } else {
+        categoriesResult = await api.getCategories();
+      }
       console.log(categoriesResult);
       if (categoriesResult.code === api.SUCCESS_CODE) {
         let categoriesList = categoriesResult.data;
         //拿推荐里的内容
         let recommendItem = categoriesList[0];
         let currentCategoryId = recommendItem.id;
-        let contentResult = await api.getCategoryContent(currentCategoryId, 1);
+        let contentResult;
+        if (process.client) {
+          console.log("process in client...");
+          contentResult = await api.getCategoryContentByProxy(currentCategoryId, 1);
+        } else {
+          contentResult = await api.getCategoryContent(currentCategoryId, 1);
+        }
         let loopData = contentResult.data.slice(0, 5);
         if (contentResult.code === api.SUCCESS_CODE) {
           //console.log(contentResult.data);
